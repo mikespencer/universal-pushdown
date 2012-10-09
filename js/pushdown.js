@@ -157,13 +157,15 @@
   
   //animate open
   Pushdown.prototype.animateOpen = function(){
-    $(this.creativeCode.col_wrap).hide(0);
-    $(this.creativeCode.exp_wrap).show(0);
-    if(this.css3.transitions){
-      $(this.creativeCode.exp_wrap).css({height: this.settings.size.height.exp + 'px'});
-    } else{
-      $(this.creativeCode.exp_wrap).stop(true, false).animate({height: this.settings.size.height.exp + 'px'}, this.settings.animationTime);
-    }
+    $(this.creativeCode.exp_wrap).appendTo(this.wrap);
+    $(this.creativeCode.col_wrap).detach();
+    this.animating = setTimeout(function(){
+      if(this.css3.transitions){
+        $(this.creativeCode.exp_wrap).css({height: this.settings.size.height.exp + 'px'});
+      } else{
+        $(this.creativeCode.exp_wrap).stop(true, false).animate({height: this.settings.size.height.exp + 'px'}, this.settings.animationTime);
+      }
+    }.bind(this), 100);
   };
 
   //animate closed
@@ -171,13 +173,13 @@
     if(this.css3.transitions){
       $(this.creativeCode.exp_wrap).css({height: this.settings.size.height.col + 'px'});
       this.animating = setTimeout(function(){
-        $(this.creativeCode.exp_wrap).hide(0);
-        $(this.creativeCode.col_wrap).show(0);
+        $(this.creativeCode.col_wrap).appendTo(this.wrap);
+        $(this.creativeCode.exp_wrap).detach();
       }.bind(this), this.settings.animationTime);
     } else{
       $(this.creativeCode.exp_wrap).stop(true,false).animate({height: this.settings.size.height.col + 'px'}, this.settings.animationTime, function(){
-        $(this.creativeCode.exp_wrap).hide(0);
-        $(this.creativeCode.col_wrap).show(0);
+        $(this.creativeCode.col_wrap).appendTo(this.wrap);
+        $(this.creativeCode.exp_wrap).detach();
       }.bind(this));
     }
   };
@@ -194,7 +196,7 @@
   
   //build the main container for the pushdown:
   Pushdown.prototype.buildWrapper = function(){
-    this.wrap = $('<div id="push_' + this.settings.id + '_wrap" style="width:' + this.settings.size.width.col + 'px;position:relative;margin:0 auto;"></div>').appendTo(this.settings.targetElement)[0];
+    this.wrap = $('<div id="push_' + this.settings.id + '_wrap" style="overflow:hidden;width:' + this.settings.size.width.col + 'px;position:relative;margin:0 auto;"></div>').appendTo(this.settings.targetElement)[0];
     return this;
   };
   
