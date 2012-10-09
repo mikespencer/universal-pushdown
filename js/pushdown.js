@@ -6,7 +6,8 @@
  *    creative first (if flash can be played, and a .swf file is the creative)
  *    and will fall back on the image creatives (if available). Backup image will
  *    be served as the final fallback. Can combine flash/image creatives (eg:
- *    .swf for the expanded part and an image for the collapsed part).
+ *    .swf for the expanded part and an image for the collapsed part). 
+ *    Compatible inside and outside of a friendly iframe.    
  */
 (function(w, d, $){
 
@@ -40,7 +41,7 @@
           exp: 970
         },
         height: {
-          col: 60,
+          col: 66,
           exp: 418
         }
       },
@@ -48,11 +49,15 @@
       expBtnCSS: {top: '0', left: '870px', width: '100px', height: '30px'},
       clickTrack: '',
       clickTags: [''],
+      clientExpPix: '',
+      clientColPix: '',
+      clientImpPix: '',
       backgroundColor: '#ffffff',
       customFlashVars: {},
       autoTimeOpen: 7000,
       autoExpDelay: 500,
-      animationTime: 500
+      animationTime: 500,
+      targetElement: '#slug_pushdown'
     }, atts);
 
     //set other settings:
@@ -60,7 +65,8 @@
     this.state = 'col';
     this.flashver = this.getFlashVer();
     this.type = {}; //populated via getPushdownSource
-    this.css3 = {};
+    this.creativeCode = {};
+    this.css3 = {};    
     this.css3.transitions = this.css3test('transition');
 
     this.source = {
@@ -74,8 +80,10 @@
       this.addTransitionsCSS();
     }
     
-    this.creativeCode = {};
-
+    if(this.settings.clientImpPix){
+      this.addPixel(this.settings.clientImpPix);
+    }
+    
     if(this.source.col && this.source.exp){
       if(this.type.col === 'flash' || this.type.exp === 'flash'){
         this.flashvarstring = this.clickTagFlashVars().customFlashVars().stringifyFlashVars();
@@ -93,7 +101,7 @@
       }
     } else{
       $(this.wrap).append('<a href="' + this.settings.clickTrack + this.settings.clickTags[0] + '" target="_blank">' +
-        '<img src="' + this.settings.backup + '" width="' + this.settings.size.width.col + '" height="' + this.settings.size.height.col + '" alt="click here for more information" style="border:0;" />'+
+        '<img src="' + this.settings.source.backup + '" width="' + this.settings.size.width.col + '" height="' + this.settings.size.height.col + '" alt="click here for more information" style="border:0;" />'+
       '</a>');
     }
     return this;
@@ -115,7 +123,12 @@
   //expand the pushdown
   Pushdown.prototype.expand = function(){
     if(arguments[0]){
-      arguments[0].preventDefault();
+      if(arguments[0].preventDefault){
+        arguments[0].preventDefault();
+      }
+      if(this.settings.clientExpPix){
+        this.addPixel(this.settings.clientExpPix);
+      }
     }
     
     this.state = 'exp';
@@ -129,7 +142,12 @@
   //collapse the pushdown
   Pushdown.prototype.collapse = function(){
     if(arguments[0]){
-      arguments[0].preventDefault();
+      if(arguments[0].preventDefault){
+        arguments[0].preventDefault();
+      }
+      if(this.settings.clientColPix){
+        this.addPixel(this.settings.clientColPix);
+      }
     }
     this.autoCloseTimerStop();
     this.state = 'col';
@@ -176,7 +194,7 @@
   
   //build the main container for the pushdown:
   Pushdown.prototype.buildWrapper = function(){
-    this.wrap = $('<div id="push_' + this.settings.id + '_wrap" style="width:' + this.settings.size.width.col + 'px;position:relative;margin:0 auto;"></div>').appendTo('#slug_pushdown')[0];
+    this.wrap = $('<div id="push_' + this.settings.id + '_wrap" style="width:' + this.settings.size.width.col + 'px;position:relative;margin:0 auto;"></div>').appendTo(this.settings.targetElement)[0];
     return this;
   };
   
@@ -308,14 +326,14 @@
         rv.push(key + '=' + this.flashvars[key]);
       }
     }
-    return '?' + rv.join('&');
+    return rv.join('&');
   };
   
   //add CSS for transitions:
   Pushdown.prototype.addTransitionsCSS = function(){
     var val = 'height ' + (this.settings.animationTime/1000) + 's ease;';
     $(this.wrap).append('<style type="text/css">' +
-      '#slug_pushdown .transition-height{' +
+        this.settings.targetElement + ' .transition-height{' +
         'transition: ' + val +
         (this.css3.prefix ? this.css3.prefix + 'transition: ' + val : '') +
         'overflow:hidden;' +
@@ -323,7 +341,7 @@
     '</style>');
   };
   
-  //css3 transitions check:
+  //css3 check:
   Pushdown.prototype.css3test = function(prop){
     var b = document.body || document.documentElement, s = b.style, p = prop, v;
     if(typeof s[p] === 'string') {return true;}
@@ -344,6 +362,19 @@
     if((o=navigator.plugins)&&(p=o[u]||o[u+t])&&(a=p.description.match(rSW)))return a[1];
     else if(!!(w.ActiveXObject))for(i=10;i>0;i--)try{if(!!(new w.ActiveXObject(v+v+i)))return i;}catch(e){}
     return 0;
+  };
+  
+  //adds a pixel:
+  Pushdown.prototype.addPixel = function(arg){
+    $(d.createElement('img')).attr({
+      'width': '1',
+      'height': '1',
+      'src': arg.replace(/\[timestamp\]|\[random\]|\%n/gi, Math.floor(Math.random()*1E9)),
+      'alt': arguments[1] || 'pixel'
+    }).css({
+      'border': '0',
+      'display': 'none'
+    }).appendTo('body');
   };
   
   w.wpAd = w.wpAd || {};

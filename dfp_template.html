@@ -1,0 +1,62 @@
+﻿<!-- AD ID: %eaid! -->
+<script>
+  window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"><\/script>');
+</script>
+<script>
+  (function(d){
+
+    'use strict';
+    
+    parent.window.wpAd = parent.window.wpAd || {};
+    parent.window.wpAd.pushdown_vars = {
+      source: {
+        flash: {
+          col: '[%Image Creative Collapsed%]',
+          exp: '[%Flash Creative Expanded%]'
+        },
+        image: {
+          col: '[%Image Creative Collapsed%]',
+          exp: '[%Image Creative Expanded%]'
+        },
+        backup: '[%Backup Image%]'
+      },
+      size: {
+        width: {
+          col: 970,
+          exp: 970
+        },
+        height: {
+          col: 66,
+          exp: 418
+        }
+      },
+      closeBtnCSS: {[%Close Button CSS%]}, //image creative only
+      expBtnCSS: {[%Expand Button CSS%]}, //image creative only
+      clickTrack: '%c',
+      clickTags: [
+        '%u',
+        '[%clickTag2 (optional)%]',
+        '[%clickTag3 (optional)%]',
+        '[%clickTag4 (optional)%]',
+        '[%clickTag5 (optional)%]',
+        '[%clickTag6 (optional)%]'
+      ],
+      clientExpPix: '[%Client Pixel (on expand click)%]',
+      clientColPix: '[%Client Pixel (on close click)%]',
+      clientImpPix: '[%Client Impression Pixel%]',
+      backgroundColor: '#ffffff', //flash creative only
+      customFlashVars: {}, //flash creative only
+      autoTimeOpen: [%Auto Expand%] ? 7000 : 0,
+      animationTime: 500,
+      autoExpDelay: 500,
+      targetElement: '#slug_pushdown',
+      id: '%eaid!'
+    };
+    
+    var s = d.createElement('script');
+    s.type = 'text/javascript';
+    s.src = '//js.washingtonpost.com/wp-srv/ad/pushdown.js';
+    d.getElementsByTagName('head')[0].appendChild(s);
+    
+  })(parent.document || document);
+</script>

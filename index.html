@@ -55,26 +55,27 @@ Famuli curvus in rei completo litus Ephesum iube enim. Regis suam ad quia iuveni
 Antiocho mittat est amet constanter determinatio debitis torporis quin. Arola iubet feci dicentes multa ei primum subsannio oculos. Palladio in fuerat construeret cena reges undis effugere quod tamen sed. Communicatio mihi Tyrum reverteretur ad per te finis laeta gavisus ait. Ideoque montes se est amet Cur meae. Probo artium liberalium perfectionis virgo meam accepit in, prius componitur suscepit pavimento scelesta nunc intuens forsitan. Cyrenaeam plus poterat ad per dicis ubi confudit huc corpore in modo compungi mulierem volutpat cum suam. Antiochiam innocentem si non solutionem ascendens sed, itaque cum suam vidit ad nomine Maria cum. Haec sed quod una non dum veniens indica enim me in modo ad nomine Piscatore mihi servitute coniunx.
 Iuvenis est Apollonius ut a lenoni incommunicabile ait Cumque hoc. Navis cupit quae ait Cumque ego Pentapolim Cyrenaeorum tertia. Quaestiones proponitur caelum ad quia illum in lucem in fuerat accidens quam dicentes Is hendrerit. Tyrio alius campo iactavitque per animum pares terris classes nostram osculo in modo cavendum es audito adsumere proprium ait. Dabo es sed haec puella sed haec. Quidditas iter navigaret ipsam ei primum gaudet de, ac iuro Apollonio omnino inventa fuit eam sed. Ideo dilectio incompletum ait in lucem exitum atque armata mare non solutionem invenerunt. Ac iuro Apollonio omnino inventa fuit eam eos! Individuationis quae vero non dum veniens Theophilum palatium. Quidam nos in deinde vero quo sanctis oravit in lucem exempli paupers coniunx caritate completae ad quia. Excepteur sola dum miror puella ut casus turbata minim venisse no singulos domum sum ad quia ad quia. Potentiam suos alloquitur hanc si quod non potentiae quem acceperat utique dolorem in lucem exitum vivit. Piscem bona delata iuvenis omnia bono quomodo filiae gloriam virginis instaret. Invitamus me naufragus ferro conparuit Tharsiam.
     </p>
+    
 		<script>
 			window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"><\/script>');
 		</script>
 		<script>
-      var wpAd = window.wpAd || {};
-      (function(d, wpAd){
-        
+      (function(d){
+
         'use strict';
-      
-        wpAd.pushdown_vars = {
+        
+        parent.window.wpAd = parent.window.wpAd || {};
+        parent.window.wpAd.pushdown_vars = {
           source: {
             flash: {
-              col: 'http://ds.serving-sys.com/BurstingRes///Site-42150/Type-2/22047e94-781f-4dbf-be34-8e44e5aa428a.swf',
-              exp: 'http://ds.serving-sys.com/BurstingRes///Site-42150/Type-2/22047e94-781f-4dbf-be34-8e44e5aa428a.swf?ord=32142'
+              col: 'assets/push_col.swf',
+              exp: 'assets/push_exp.swf'
             },
             image: {
-              col: 'http://img2.wpdigital.net/rf/image_90x60/2010-2019/WashingtonPost/2012/10/05/Interactivity/Images/computer-mouse2-296.jpg',
-              exp: 'http://img2.wpdigital.net/rf/image_90x60/2010-2019/WashingtonPost/2012/10/05/Interactivity/Images/computer-mouse2-296.jpg'
+              col: 'assets/push_col.png',
+              exp: 'assets/push_exp.png'
             },
-            backup: ''
+            backup: 'assets/push_col.png'
           },
           size: {
             width: {
@@ -82,18 +83,23 @@ Iuvenis est Apollonius ut a lenoni incommunicabile ait Cumque hoc. Navis cupit q
               exp: 970
             },
             height: {
-              col: 60,
+              col: 66,
               exp: 418
             }
           },
           closeBtnCSS: {top: '0', left: '870px', width: '100px', height: '30px'}, //image creative only
           expBtnCSS: {top: '0', left: '870px', width: '100px', height: '30px'}, //image creative only
           clickTrack: '',
-          clickTags: [''],
+          clickTags: ['http://www.example.com'],
+          clientExpPix: '',
+          clientColPix: '',
+          clientImpPix: '',
           backgroundColor: '#ffffff', //flash creative only
           customFlashVars: {}, //flash creative only
           autoTimeOpen: 7000,
           animationTime: 500,
+          autoExpDelay: 500,
+          targetElement: '#slug_pushdown',
           id: '%eaid!'
         };
         
@@ -101,7 +107,9 @@ Iuvenis est Apollonius ut a lenoni incommunicabile ait Cumque hoc. Navis cupit q
         s.type = 'text/javascript';
         s.src = 'js/pushdown.js';
         d.getElementsByTagName('head')[0].appendChild(s);
-      })(document, wpAd);
-		</script>	
+        
+      })(parent.document || document);
+		</script>
+
 	</body>
 </html>
