@@ -36,14 +36,14 @@ Washington Post is able to provide total impression numbers from DFP, but tracki
 
 The following code needs to be executed in the relavent .swf to open/close the pushdown:
 
-##Expanding pushdown from Flash AS3 example
+###Expanding pushdown from Flash AS3 example
 
     if(ExternalInterface.available){
       ExternalInterface.call('function(){try{wpAd.push.expand(true);}catch(e){}}');
     }
 
 
-##Collapsing pushdown from Flash AS3 example
+###Collapsing pushdown from Flash AS3 example
 
     if(ExternalInterface.available){
       ExternalInterface.call('function(){try{wpAd.push.collapse(true);}catch(e){}}');
