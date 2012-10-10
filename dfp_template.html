@@ -3,12 +3,12 @@
   window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"><\/script>');
 </script>
 <script>
-  (function(d){
+  (function(d, w){
 
     'use strict';
     
-    parent.window.wpAd = parent.window.wpAd || {};
-    parent.window.wpAd.pushdown_vars = {
+    w.wpAd = w.wpAd || {};
+    w.wpAd.pushdown_vars = {
       source: {
         flash: {
           col: '[%Flash Creative Collapsed%]',
@@ -58,5 +58,5 @@
     s.src = '//js.washingtonpost.com/wp-srv/ad/pushdown.js';
     d.getElementsByTagName('head')[0].appendChild(s);
     
-  })(parent.document || document);
+  })((parent.document || document), (parent.window || window));
 </script>

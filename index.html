@@ -60,12 +60,12 @@ Iuvenis est Apollonius ut a lenoni incommunicabile ait Cumque hoc. Navis cupit q
       window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"><\/script>');
     </script>
     <script>
-      (function(d){
+      (function(d, w){
 
         'use strict';
         
-        parent.window.wpAd = parent.window.wpAd || {};
-        parent.window.wpAd.pushdown_vars = {
+        w.wpAd = w.wpAd || {};
+        w.wpAd.pushdown_vars = {
           source: {
             flash: {
               col: 'assets/push_col.swf',
@@ -108,7 +108,7 @@ Iuvenis est Apollonius ut a lenoni incommunicabile ait Cumque hoc. Navis cupit q
         s.src = 'js/pushdown.js';
         d.getElementsByTagName('head')[0].appendChild(s);
         
-      })(parent.document || document);
+      })((parent.document || document), (parent.window || window));
     </script>
 
   </body>
