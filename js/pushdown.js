@@ -376,7 +376,7 @@
     }).css({
       'border': '0',
       'display': 'none'
-    }).appendTo('body');
+    }).appendTo(this.wrap);
   };
   
   w.wpAd = w.wpAd || {};
