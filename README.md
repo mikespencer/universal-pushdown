@@ -51,10 +51,10 @@ The following code needs to be executed in the relavent .swf to open/close the p
 
 For reference, the JavaScript function calls that expand and collapse the pushdown are:
 
-####Expand
+###Expand
     wpAd.push.expand(true);
 
-####Collapse
+###Collapse
     wpAd.push.collapse(true);
     
 ## 
