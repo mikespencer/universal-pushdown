@@ -385,3 +385,7 @@
 })(window, document, window.jQuery);
 
 wpAd.push = new wpAd.Pushdown(wpAd.pushdown_vars);
+
+//compatibility with old Flash creatives:
+var opa_slider = {doSlideOpen: wpAd.push.expand, doSlideClose: wpAd.push.collapse};
+wpAd.flashPushdown = {open: wpAd.push.expand, close: wpAd.push.collapse};
