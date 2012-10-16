@@ -266,7 +266,15 @@
     this.creativeCode.exp = this.type.exp === 'flash' ? this.flashCode() : this.imageCode();
     this.creativeCode.exp_wrap = $(d.createElement('div'))
       .attr('id', 'push_exp_wrap_' + this.settings.id)
-      .css({ display: 'block', height: this.settings.size.height.exp + 'px', bottom: 0, position: 'absolute', zIndex: '10' })
+      .css({
+        display: 'block',
+        height: this.settings.size.height.exp + 'px',
+        bottom: 0,
+        position: 'absolute',
+        left: 0,
+        zIndex: '10',
+        textAlign: 'left'
+      })
       .append(this.creativeCode.exp)
       .append(this.buildCloseBtn())
       .appendTo(this.wrap)[0];  
