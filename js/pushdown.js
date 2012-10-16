@@ -77,7 +77,7 @@
     this.buildWrapper();
     
     if(this.css3.transitions){
-      this.addTransitionsCSS();
+      this.addCSS3();
     }
     
     if(this.settings.clientImpPix){
@@ -331,8 +331,8 @@
     return rv.join('&');
   };
   
-  //add CSS for transitions:
-  Pushdown.prototype.addTransitionsCSS = function(){
+  //add CSS for animation:
+  Pushdown.prototype.addCSS3 = function(){
     var val = 'height ' + (this.settings.animationTime/1000) + 's ease;';
     $(this.wrap).append('<style type="text/css">' +
         this.settings.targetElement + ' .transition-height{' +
