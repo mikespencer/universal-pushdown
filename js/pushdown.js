@@ -348,7 +348,7 @@
       props = [this.css3.transition + ':' + transitionVal];
       
     if(/(ipad|iphone|ipod)/i.test(navigator.userAgent) && this.css3.transform){
-      props.push(this.css3.transform + ':' + transformVal)
+      props.push(this.css3.transform + ':' + transformVal);
     }
 
     $(this.wrap).append('<style type="text/css">' + this.settings.targetElement + ' .transition-height{' + props.join(';') + '}</style>');
