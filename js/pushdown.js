@@ -336,6 +336,9 @@
     var val = 'height ' + (this.settings.animationTime/1000) + 's ease;';
     $(this.wrap).append('<style type="text/css">' +
         this.settings.targetElement + ' .transition-height{' +
+        /* IOS enable hardware-acceleration */
+        'transform: translate3d(0,0,0);' +
+        (this.css3.prefix ? this.css3.prefix + 'translate3d(0,0,0);' : '') +
         'transition: ' + val +
         (this.css3.prefix ? this.css3.prefix + 'transition: ' + val : '') +
         'overflow:hidden;' +
