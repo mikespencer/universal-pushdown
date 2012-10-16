@@ -340,41 +340,18 @@
     }
     return rv.join('&');
   };
-
+  
+  //add CSS for animation:
   Pushdown.prototype.addCSS3 = function(){
     var transitionVal = 'height ' + (this.settings.animationTime/1000) + 's ease',
       transformVal = 'translate3d(0,0,0)',
-      props = [],
-      style = {},
-      cssString;
+      props = [this.css3.transition + ':' + transitionVal];
       
-    style[this.css3.transition] = transitionVal;
     if(/(ipad|iphone|ipod)/i.test(navigator.userAgent) && this.css3.transform){
-      style[this.css3.transform] = transformVal;
+      props.push(this.css3.transform + ':' + transformVal)
     }
-    for(var key in style){
-      props.push(key + ':' + style[key]);
-    }
-    cssString = '<style type="text/css">' + this.settings.targetElement + ' .transition-height{' + props.join(';') + '}</style>';
-    $(this.wrap).append(cssString);
-  };
 
-  //add CSS for animation:
-  Pushdown.prototype.addCSS3a = function(){
-    var val = 'height ' + (this.settings.animationTime/1000) + 's ease;';
-    $(this.wrap).append('<style type="text/css">' +
-      this.settings.targetElement + ' .transition-height{' +
-        /* IOS enable hardware-acceleration */
-        (/(ipad|iphone|ipod)/i.test(navigator.userAgent) ? 
-          'transform: translate3d(0,0,0);' +
-          (this.css3.prefix ? this.css3.prefix + 'transform: translate3d(0,0,0);' : '') :
-          ''
-        ) +
-        'transition: ' + val +
-        (this.css3.prefix ? this.css3.prefix + 'transition: ' + val : '') +
-        'overflow:hidden;' +
-      '}' +
-    '</style>');
+    $(this.wrap).append('<style type="text/css">' + this.settings.targetElement + ' .transition-height{' + props.join(';') + '}</style>');
   };
   
   //css3 check:
