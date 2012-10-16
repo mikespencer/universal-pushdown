@@ -67,7 +67,8 @@
     this.type = {}; //populated via getPushdownSource
     this.creativeCode = {};
     this.css3 = {};    
-    this.css3.transitions = this.css3test('transition');
+    this.css3.transition = this.css3test('transition');
+    this.css3.transform = this.css3test('transform');
 
     this.source = {
       col: this.getPushdownSource('col'),
@@ -76,7 +77,7 @@
     
     this.buildWrapper();
     
-    if(this.css3.transitions){
+    if(this.css3.transition){
       this.addCSS3();
     }
     
@@ -158,27 +159,26 @@
   //animate open
   Pushdown.prototype.animateOpen = function(){
     $(this.creativeCode.exp_wrap).appendTo(this.wrap);
-    $(this.creativeCode.col_wrap).detach();
+    $(this.creativeCode.col_wrap).hide(0);
     this.animating = setTimeout(function(){
-      if(this.css3.transitions){
-        $(this.creativeCode.exp_wrap).css({height: this.settings.size.height.exp + 'px'});
+      if(this.css3.transition){
+        $(this.wrap).css({height: this.settings.size.height.exp + 'px'});
       } else{
-        $(this.creativeCode.exp_wrap).stop(true, false).animate({height: this.settings.size.height.exp + 'px'}, this.settings.animationTime);
+        $(this.wrap).stop(true, false).animate({height: this.settings.size.height.exp + 'px'}, this.settings.animationTime);
       }
     }.bind(this), 100);
   };
 
   //animate closed
   Pushdown.prototype.animateClosed = function(){
-    if(this.css3.transitions){
-      $(this.creativeCode.exp_wrap).css({height: this.settings.size.height.col + 'px'});
+    $(this.creativeCode.col_wrap).show(0);
+    if(this.css3.transition){
+      $(this.wrap).css({height: this.settings.size.height.col + 'px'});
       this.animating = setTimeout(function(){
-        $(this.creativeCode.col_wrap).appendTo(this.wrap);
         $(this.creativeCode.exp_wrap).detach();
       }.bind(this), this.settings.animationTime);
     } else{
-      $(this.creativeCode.exp_wrap).stop(true,false).animate({height: this.settings.size.height.col + 'px'}, this.settings.animationTime, function(){
-        $(this.creativeCode.col_wrap).appendTo(this.wrap);
+      $(this.wrap).stop(true,false).animate({height: this.settings.size.height.col + 'px'}, this.settings.animationTime, function(){
         $(this.creativeCode.exp_wrap).detach();
       }.bind(this));
     }
@@ -193,10 +193,22 @@
   Pushdown.prototype.autoCloseTimerStop = function(){
     try{clearTimeout(this.timer);}catch(e){}
   };
-  
+
   //build the main container for the pushdown:
   Pushdown.prototype.buildWrapper = function(){
-    this.wrap = $('<div id="push_' + this.settings.id + '_wrap" style="overflow:hidden;width:' + this.settings.size.width.col + 'px;position:relative;margin:0 auto;"></div>').appendTo(this.settings.targetElement)[0];
+    this.wrap = $(d.createElement('div'))
+      .attr({
+        id: 'push_' + this.settings.id + '_wrap'
+      })
+      .addClass('transition-height')
+      .css({
+        overflow: 'hidden',
+        width : this.settings.size.width.col + 'px',
+        height: this.settings.size.height.col + 'px',
+        position: 'relative',
+        margin: '0 auto'
+      })
+      .appendTo(this.settings.targetElement)[0];
     return this;
   };
   
@@ -244,7 +256,6 @@
     this.creativeCode.col_wrap = $(d.createElement('div'))
       .attr('id', 'push_col_wrap_' + this.settings.id)
       .css({ height: this.settings.size.height.col + 'px' })
-      .addClass('transition-height')
       .append(this.creativeCode.col)
       .append(this.buildExpBtn())
       .appendTo(this.wrap)[0];
@@ -255,8 +266,7 @@
     this.creativeCode.exp = this.type.exp === 'flash' ? this.flashCode() : this.imageCode();
     this.creativeCode.exp_wrap = $(d.createElement('div'))
       .attr('id', 'push_exp_wrap_' + this.settings.id)
-      .css({ display: 'block', height: this.settings.size.height.col + 'px' })
-      .addClass('transition-height')
+      .css({ display: 'block', height: this.settings.size.height.exp + 'px', bottom: 0, position: 'absolute', zIndex: '10' })
       .append(this.creativeCode.exp)
       .append(this.buildCloseBtn())
       .appendTo(this.wrap)[0];  
@@ -330,15 +340,36 @@
     }
     return rv.join('&');
   };
-  
-  //add CSS for animation:
+
   Pushdown.prototype.addCSS3 = function(){
+    var transitionVal = 'height ' + (this.settings.animationTime/1000) + 's ease',
+      transformVal = 'translate3d(0,0,0)',
+      props = [],
+      style = {},
+      cssString;
+      
+    style[this.css3.transition] = transitionVal;
+    if(/(ipad|iphone|ipod)/i.test(navigator.userAgent) && this.css3.transform){
+      style[this.css3.transform] = transformVal;
+    }
+    for(var key in style){
+      props.push(key + ':' + style[key]);
+    }
+    cssString = '<style type="text/css">' + this.settings.targetElement + ' .transition-height{' + props.join(';') + '}</style>';
+    $(this.wrap).append(cssString);
+  };
+
+  //add CSS for animation:
+  Pushdown.prototype.addCSS3a = function(){
     var val = 'height ' + (this.settings.animationTime/1000) + 's ease;';
     $(this.wrap).append('<style type="text/css">' +
-        this.settings.targetElement + ' .transition-height{' +
+      this.settings.targetElement + ' .transition-height{' +
         /* IOS enable hardware-acceleration */
-        'transform: translate3d(0,0,0);' +
-        (this.css3.prefix ? this.css3.prefix + 'transform: translate3d(0,0,0);' : '') +
+        (/(ipad|iphone|ipod)/i.test(navigator.userAgent) ? 
+          'transform: translate3d(0,0,0);' +
+          (this.css3.prefix ? this.css3.prefix + 'transform: translate3d(0,0,0);' : '') :
+          ''
+        ) +
         'transition: ' + val +
         (this.css3.prefix ? this.css3.prefix + 'transition: ' + val : '') +
         'overflow:hidden;' +
@@ -349,13 +380,12 @@
   //css3 check:
   Pushdown.prototype.css3test = function(prop){
     var b = document.body || document.documentElement, s = b.style, p = prop, v;
-    if(typeof s[p] === 'string') {return true;}
+    if(typeof s[p] === 'string') {return p;}
     v = ['Moz', 'Webkit', 'O', 'ms'],
     p = p.charAt(0).toUpperCase() + p.substr(1);
     for(var i=0; i<v.length; i++) {
       if(typeof s[v[i] + p] === 'string') {
-        this.css3.prefix = this.css3.prefix || '-' + v[i].toLowerCase() + '-';
-        return true;
+        return '-' + v[i].toLowerCase() + '-' + p;
       }
     }
     return false;
