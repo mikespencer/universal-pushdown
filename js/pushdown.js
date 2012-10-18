@@ -157,7 +157,7 @@
   //animate open
   Pushdown.prototype.animateOpen = function(){
     $(this.creativeCode.exp_wrap).appendTo(this.wrap);
-    $(this.creativeCode.col_wrap).hide(0);
+    $(this.creativeCode.col_wrap).detach();
     this.animating = setTimeout(function(){
       if(this.css3.transition){
         $(this.wrap).css({height: this.settings.size.height.exp + 'px'});
@@ -169,7 +169,7 @@
 
   //animate closed
   Pushdown.prototype.animateClosed = function(){
-    $(this.creativeCode.col_wrap).show(0);
+    $(this.creativeCode.col_wrap).appendTo(this.wrap);
     if(this.css3.transition){
       $(this.wrap).css({height: this.settings.size.height.col + 'px'});
       this.animating = setTimeout(function(){
