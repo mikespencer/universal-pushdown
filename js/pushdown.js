@@ -137,7 +137,6 @@
       this.buildExpCreative();
     }
     this.animateOpen();
-    return this;
   };
   
   //collapse the pushdown
@@ -153,7 +152,6 @@
     this.autoCloseTimerStop();
     this.state = 'col';
     this.animateClosed();
-    return this;
   };
   
   //animate open
@@ -209,7 +207,6 @@
         margin: '0 auto'
       })
       .appendTo(this.settings.targetElement)[0];
-    return this;
   };
   
   //returns the flash object in its current state (expanded/collapsed)
