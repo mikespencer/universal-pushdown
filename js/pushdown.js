@@ -158,13 +158,14 @@
     }
     this.autoCloseTimerStop();
     this.state = 'col';
+    this.buildColCreative();
     this.animateClosed();
   };
 
   //animate open
   Pushdown.prototype.animateOpen = function(){
     $(this.creativeCode.exp_wrap).appendTo(this.wrap);
-    $(this.creativeCode.col_wrap).detach();
+    $(this.creativeCode.col_wrap).remove();
     this.animating = setTimeout(function(){
       if(this.css3.transition){
         $(this.wrap).css({height: this.settings.size.height.exp + 'px'});
@@ -180,11 +181,14 @@
     if(this.css3.transition){
       $(this.wrap).css({height: this.settings.size.height.col + 'px'});
       this.animating = setTimeout(function(){
-        $(this.creativeCode.exp_wrap).detach();
+        if(this.type[this.state] === 'flash'){
+
+        }
+        $(this.creativeCode.exp_wrap).remove();
       }.bind(this), this.settings.animationTime);
     } else{
       $(this.wrap).stop(true,false).animate({height: this.settings.size.height.col + 'px'}, this.settings.animationTime, function(){
-        $(this.creativeCode.exp_wrap).detach();
+        $(this.creativeCode.exp_wrap).remove();
       }.bind(this));
     }
   };
