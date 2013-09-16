@@ -6,16 +6,16 @@
  *    creative first (if flash can be played, and a .swf file is the creative)
  *    and will fall back on the image creatives (if available). Backup image will
  *    be served as the final fallback. Can combine flash/image creatives (eg:
- *    .swf for the expanded part and an image for the collapsed part). 
- *    Compatible inside and outside of a friendly iframe.    
+ *    .swf for the expanded part and an image for the collapsed part).
+ *    Compatible inside and outside of a friendly iframe.
  */
 (function(w, d, $){
 
   'use strict';
-  
+
   //jQuery is required
   if(!$){return false;}
-  
+
   //add bind method if browser does not natively support it:
   if(!Function.prototype.bind)Function.prototype.bind=function(oThis){if(typeof this!=="function")throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");var aArgs=Array.prototype.slice.call(arguments,1),fToBind=this,FNOP=function(){},fBound=function(){return fToBind.apply(this instanceof FNOP&&oThis?this:oThis,aArgs.concat(Array.prototype.slice.call(arguments)));};FNOP.prototype=this.prototype;fBound.prototype=new FNOP();return fBound;};
 
@@ -27,7 +27,8 @@
       source: {
         flash: {
           col: '',
-          exp: ''
+          exp: '',
+          expUserInitiated: ''
         },
         image: {
           col: '',
@@ -66,7 +67,7 @@
     this.flashver = this.getFlashVer();
     this.type = {}; //populated via getPushdownSource
     this.creativeCode = {};
-    this.css3 = {};    
+    this.css3 = {};
     this.css3.transition = this.css3test('transition');
     this.css3.transform = this.css3test('transform');
 
@@ -74,24 +75,24 @@
       col: this.getPushdownSource('col'),
       exp: this.getPushdownSource('exp')
     };
-    
+
     this.buildWrapper();
-    
+
     if(this.css3.transition){
       this.addCSS3();
     }
-    
+
     if(this.settings.clientImpPix){
       this.addPixel(this.settings.clientImpPix);
     }
-    
+
     if(this.source.col && this.source.exp){
       if(this.type.col === 'flash' || this.type.exp === 'flash'){
         this.flashvarstring = this.clickTagFlashVars().customFlashVars().stringifyFlashVars();
       }
-      
+
       this.buildColCreative();
-      
+
       if(this.settings.autoTimeOpen){
         $(function(){
           setTimeout(function(){
@@ -107,7 +108,7 @@
     }
     return this;
   }
-  
+
   //determines what type of pushdown to use (flash/image):
   Pushdown.prototype.getPushdownSource = function(state){
     if(this.flashver && this.settings.source.flash[state]){
@@ -120,9 +121,10 @@
       return false;
     }
   };
-  
+
   //expand the pushdown
   Pushdown.prototype.expand = function(){
+    this.state = 'exp';
     if(arguments[0]){
       if(arguments[0].preventDefault){
         arguments[0].preventDefault();
@@ -130,15 +132,20 @@
       if(this.settings.clientExpPix){
         this.addPixel(this.settings.clientExpPix);
       }
+      if(this.type[this.state] === 'flash' && this.settings.source.flash.expUserInitiated){
+        if(!this.userInitiatedCreativeBuilt){
+          this.source[this.state] = this.settings.source.flash.expUserInitiated;
+          this.buildExpCreative();
+          this.userInitiatedCreativeBuilt = true;
+        }
+      }
     }
-    
-    this.state = 'exp';
     if(!this.creativeCode.exp){
       this.buildExpCreative();
     }
     this.animateOpen();
   };
-  
+
   //collapse the pushdown
   Pushdown.prototype.collapse = function(){
     if(arguments[0]){
@@ -153,7 +160,7 @@
     this.state = 'col';
     this.animateClosed();
   };
-  
+
   //animate open
   Pushdown.prototype.animateOpen = function(){
     $(this.creativeCode.exp_wrap).appendTo(this.wrap);
@@ -181,12 +188,12 @@
       }.bind(this));
     }
   };
-  
+
   //start the auto close timer
   Pushdown.prototype.autoCloseTimerStart = function(){
     this.timer = setTimeout(this.collapse.bind(this), this.settings.autoTimeOpen);
   };
-  
+
   //stop the auto close timer
   Pushdown.prototype.autoCloseTimerStop = function(){
     try{clearTimeout(this.timer);}catch(e){}
@@ -208,7 +215,7 @@
       })
       .appendTo(this.settings.targetElement)[0];
   };
-  
+
   //returns the flash object in its current state (expanded/collapsed)
   Pushdown.prototype.flashCode = function(){
     var s = this.settings;
@@ -219,7 +226,7 @@
       '<param name="play" value="true" />' +
       '<param name="wmode" value="opaque" />' +
       '<param name="allowScriptAccess" value="always" />' +
-      '<param name="flashvars" value="' + this.flashvarstring + '" />' + 
+      '<param name="flashvars" value="' + this.flashvarstring + '" />' +
       '<!--[if !IE]>-->' +
         '<object type="application/x-shockwave-flash" data="' + this.source[this.state] + '" width="'+ s.size.width[this.state] +'" height="'+ s.size.height[this.state] +'" id="push_' + this.settings.id + '_' + this.state + '" style="outline:none;">' +
           '<param name="movie" value="' + this.source[this.state] + '" />' +
@@ -233,9 +240,9 @@
       '<!--<![endif]-->' +
     '</object>')[0];
   };
-  
+
   //returns the image object in its current state (expanded/collapsed)
-  Pushdown.prototype.imageCode = function(){   
+  Pushdown.prototype.imageCode = function(){
     return $($(d.createElement('a')).attr({
       href: this.settings.clickTrack + this.settings.clickTags[0],
       target: '_blank'
@@ -246,7 +253,7 @@
       alt: 'Click here for more information'
     }).css({'border': '0'})[0])[0];
   };
-  
+
   //build the wrapping collapsed creative code
   Pushdown.prototype.buildColCreative = function(){
     this.creativeCode.col = this.type.col === 'flash' ? this.flashCode() : this.imageCode();
@@ -257,7 +264,7 @@
       .append(this.buildExpBtn())
       .appendTo(this.wrap)[0];
   };
-  
+
   //build the wrapping expanded creative code
   Pushdown.prototype.buildExpCreative = function(){
     this.creativeCode.exp = this.type.exp === 'flash' ? this.flashCode() : this.imageCode();
@@ -274,9 +281,9 @@
       })
       .append(this.creativeCode.exp)
       .append(this.buildCloseBtn())
-      .appendTo(this.wrap)[0];  
+      .appendTo(this.wrap)[0];
   };
-  
+
   //build the expand button:
   Pushdown.prototype.buildExpBtn = function(){
     return this.type.col === 'image' ? $(d.createElement('a'))
@@ -286,7 +293,7 @@
         cursor: 'pointer',
         display: 'block',
         position: 'absolute',
-        zIndex: '999'    
+        zIndex: '999'
       }, this.settings.expBtnCSS))
       .attr({
         title: 'Click here to expand',
@@ -294,7 +301,7 @@
       })
       .live('click', this.expand.bind(this))[0] : '';
   };
-  
+
   //build the close button:
   Pushdown.prototype.buildCloseBtn = function(){
     return this.type.exp === 'image' ? $(d.createElement('a'))
@@ -304,7 +311,7 @@
         cursor: 'pointer',
         display: 'block',
         position: 'absolute',
-        zIndex: '999'    
+        zIndex: '999'
       }, this.settings.closeBtnCSS))
       .attr({
         title: 'Click here to close',
@@ -312,7 +319,7 @@
       })
       .live('click', this.collapse.bind(this))[0] : '';
   };
-  
+
   //return clicktag code for flash as array
   Pushdown.prototype.clickTagFlashVars = function(){
     var ct = this.settings.clickTags,
@@ -326,7 +333,7 @@
     }
     return this;
   };
-  
+
   //add custom flashvars
   Pushdown.prototype.customFlashVars = function(){
     if(this.settings.customFlashVars){
@@ -345,20 +352,20 @@
     }
     return rv.join('&');
   };
-  
+
   //add CSS for animation:
   Pushdown.prototype.addCSS3 = function(){
     var transitionVal = 'height ' + (this.settings.animationTime/1000) + 's ease',
       transformVal = 'translate3d(0,0,0)',
       props = [this.css3.transition + ':' + transitionVal];
-      
+
     if(/(ipad|iphone|ipod)/i.test(navigator.userAgent) && this.css3.transform){
       props.push(this.css3.transform + ':' + transformVal);
     }
 
     $(this.wrap).append('<style type="text/css">' + this.settings.targetElement + ' .transition-height{' + props.join(';') + '}</style>');
   };
-  
+
   //css3 check:
   Pushdown.prototype.css3test = function(prop){
     var b = document.body || document.documentElement, s = b.style, p = prop, v;
@@ -372,7 +379,7 @@
     }
     return false;
   };
-  
+
   //returns the flash player version, or 0 for no flash support
   Pushdown.prototype.getFlashVer = function(){
     var i,a,o,p,s="Shockwave",f="Flash",t=" 2.0",u=s+" "+f,v=s+f+".",rSW=new RegExp("^"+u+" (\\d+)");
@@ -380,7 +387,7 @@
     else if(!!(w.ActiveXObject))for(i=10;i>0;i--)try{if(!!(new w.ActiveXObject(v+v+i)))return i;}catch(e){}
     return 0;
   };
-  
+
   //adds a pixel:
   Pushdown.prototype.addPixel = function(arg){
     $(d.createElement('img')).attr({
@@ -393,10 +400,10 @@
       'display': 'none'
     }).appendTo(this.wrap);
   };
-  
+
   w.wpAd = w.wpAd || {};
   w.wpAd.Pushdown = Pushdown;
-  
+
 })(window, document, window.jQuery);
 
 wpAd.push = new wpAd.Pushdown(wpAd.pushdown_vars);
